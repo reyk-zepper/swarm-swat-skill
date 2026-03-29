@@ -261,6 +261,8 @@ Einfach arbeiten. Der Dispatcher erkennt automatisch wann ein SWAT-Team Mehrwert
 SWAT Team: Full-Stack Feature
 Grund: End-to-end Feature ueber Frontend + Backend + Tests
 Rollen: Schema-Designer, Frontend-Builder, Backend-Builder, Integrator, E2E-Tester
+Agents: 5x Sonnet (Worker) + 1x Opus (Quality Gate) = 6 Agents
+Quality Mode: standard
 Override: /agent-swat-swarm <anderes-team>
 ```
 
@@ -306,7 +308,7 @@ Sonnet ist schnell und kosteneffizient — perfekt fuer gut-scopte Teilaufgaben 
 
 ```
 agent-swat-swarm/
-|-- SKILL.md                              # Dispatcher + Orchestrierungsprotokoll
+|-- SKILL.md                              # Dispatcher (Team-Selektion + Routing)
 |-- references/
 |   |-- teams/
 |   |   |-- security-audit.md             # Security Audit SWAT Team
@@ -315,6 +317,7 @@ agent-swat-swarm/
 |   |   |-- migration-refactor.md         # Migration/Refactor SWAT Team
 |   |   |-- full-stack-feature.md         # Full-Stack Feature SWAT Team
 |   |   +-- team-builder.md              # SWAT Team Builder (Meta-Team)
+|   |-- orchestration-protocol.md         # Ausfuehrungsprotokoll (Phasen 1-4, Rework)
 |   |-- quality-gate-protocol.md          # QG-Spec mit DA-Integration
 |   +-- generic-swarm.md                 # Fallback fuer ungematchte Tasks
 +-- docs/
@@ -325,7 +328,7 @@ agent-swat-swarm/
             +-- 2026-03-29-agent-swat-swarm-implementation.md
 ```
 
-**~3.500 Zeilen** ueber 10 Dateien, davon **24 Agent-Rollen** mit vollstaendigen Prompt-Templates und Output-Contracts.
+**~4.300 Zeilen** ueber 11 Dateien, davon **24 Agent-Rollen** mit vollstaendigen Prompt-Templates und Output-Contracts.
 
 ## Eigene Teams erstellen
 
@@ -655,6 +658,8 @@ Just work. The dispatcher automatically detects when a SWAT team adds value:
 SWAT Team: Full-Stack Feature
 Reason: End-to-end feature across frontend + backend + tests
 Roles: Schema-Designer, Frontend-Builder, Backend-Builder, Integrator, E2E-Tester
+Agents: 5x Sonnet (Worker) + 1x Opus (Quality Gate) = 6 Agents
+Quality Mode: standard
 Override: /agent-swat-swarm <other-team>
 ```
 
@@ -700,7 +705,7 @@ Sonnet is fast and cost-efficient — perfect for well-scoped subtasks with clea
 
 ```
 agent-swat-swarm/
-|-- SKILL.md                              # Dispatcher + orchestration protocol
+|-- SKILL.md                              # Dispatcher (team selection + routing)
 |-- references/
 |   |-- teams/
 |   |   |-- security-audit.md             # Security Audit SWAT Team
@@ -709,6 +714,7 @@ agent-swat-swarm/
 |   |   |-- migration-refactor.md         # Migration/Refactor SWAT Team
 |   |   |-- full-stack-feature.md         # Full-Stack Feature SWAT Team
 |   |   +-- team-builder.md              # SWAT Team Builder (Meta-Team)
+|   |-- orchestration-protocol.md         # Execution protocol (phases 1-4, rework)
 |   |-- quality-gate-protocol.md          # QG spec with DA integration
 |   +-- generic-swarm.md                 # Fallback for unmatched tasks
 +-- docs/
@@ -719,7 +725,7 @@ agent-swat-swarm/
             +-- 2026-03-29-agent-swat-swarm-implementation.md
 ```
 
-**~3,500 lines** across 10 files, including **24 agent roles** with complete prompt templates and output contracts.
+**~4,300 lines** across 11 files, including **24 agent roles** with complete prompt templates and output contracts.
 
 ## Creating Your Own Teams
 
