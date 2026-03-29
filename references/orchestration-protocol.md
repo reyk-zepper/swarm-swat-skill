@@ -65,6 +65,20 @@ Beispiele:
 14. Quality Gate erneut ausfuehren (gleicher Modus)
 15. Nach 2 Zyklen ohne PASS: bestes Ergebnis mit verbleibenden QG-Notes an User praesentieren
 
+## Phase 5: Post-Swarm Learning (optional)
+
+Feuert NUR wenn ein spezialisiertes Team (nicht Generic Fallback) eingesetzt wurde UND:
+- QG hat **FAIL** zurueckgegeben (Rework wurde durchgefuehrt), ODER
+- QG hat **PASS_WITH_NOTES** mit mindestens einem **MAJOR**-level Item zurueckgegeben
+
+Bei clean PASS oder nur MINOR Notes: Phase 5 ueberspringen.
+
+16. `Read references/trainer-protocol.md` Teil 2 und folge dem Post-Swarm Learning Protokoll
+17. Zeige dem User die vorgeschlagene Prompt-Verbesserung und hole Approval ein
+18. Bei Approval: Edit die Team-Definition + Changelog-Eintrag ergaenzen
+
+Progress-Update: `[Phase 5/5] Post-Swarm Learning — [Rolle] Prompt verbessert` oder `[Phase 5/5] Uebersprungen (clean PASS)`
+
 ## Ergebnis-Praesentation
 
 - **Knappe Synthese** — niemals raw Agent-Outputs dumpen

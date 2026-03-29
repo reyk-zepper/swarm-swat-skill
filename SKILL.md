@@ -41,7 +41,7 @@ Spezialisierte Agent-Teams fuer komplexe Aufgaben. Jedes SWAT-Team hat vorkonfig
 ### 1. User-Override pruefen
 
 - **Slash-Command**: `/agent-swat-swarm <team-name>` → Team erzwungen
-  - Gueltige Namen: `security-audit`, `frontend-feature`, `backend-api`, `migration-refactor`, `full-stack-feature`, `team-builder`
+  - Gueltige Namen: `security-audit`, `frontend-feature`, `backend-api`, `migration-refactor`, `full-stack-feature`, `team-builder`, `team-audit`
 - **Keyword im Prompt**: "nutze Security Team", "mit Frontend SWAT", "deploy Backend Team" → Team erzwungen
 
 ### 2. Automatisches Matching (kein Override)
@@ -50,7 +50,7 @@ Spezialisierte Agent-Teams fuer komplexe Aufgaben. Jedes SWAT-Team hat vorkonfig
 - Beruecksichtige **betroffene Dateien/Domaenen** und gleiche gegen Team-Trigger-Keywords in den Team-Definitionen ab
 - Eindeutiger Match → Team deployen
 - Unklarer Match → User kurz fragen (1 Multiple-Choice-Frage)
-- Kein Match → Generic Fallback
+- Kein Match → `Read references/trainer-protocol.md` Teil 1: Prüfe ob Auto-Creation sinnvoll ist (wiederkehrender Task-Typ + distinct + Spezialisierung bringt Mehrwert). Falls ja: Team Builder auto-deployen. Falls nein: Generic Fallback.
 
 ### 3. Empfehlung anzeigen (VOR Ausfuehrung)
 
@@ -75,7 +75,8 @@ Nach Team-Wahl:
 
 ## References
 
-- **`references/orchestration-protocol.md`** — Vollstaendiges Ausfuehrungsprotokoll (Phasen 1-4, Rework, Sizing, Anti-Patterns)
+- **`references/orchestration-protocol.md`** — Vollstaendiges Ausfuehrungsprotokoll (Phasen 1-5, Rework, Sizing, Anti-Patterns)
+- **`references/trainer-protocol.md`** — Auto-Creation, Post-Swarm Learning, Team Fitness Audit
 - **`references/teams/*.md`** — SWAT-Team-Definitionen mit Rollen, Prompts, Workflow-Graphs
 - **`references/quality-gate-protocol.md`** — QG-Spec mit DA-Integration, Rework-Protokoll
 - **`references/generic-swarm.md`** — Fallback fuer Tasks ohne Team-Match
