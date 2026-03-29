@@ -173,6 +173,8 @@ Fuer Rollen mit `isolation: worktree` in der Team-Definition:
 
 Max 8 Workers. Koordinations-Overhead waechst superlinear darueber.
 
+**`max_workers` Definition:** Der `max_workers` Wert in Team-Definitionen gibt die **Gesamtzahl der Rollen** im Team an (nicht die Peak-Parallelitaet). Die tatsaechliche Parallelitaet ergibt sich aus dem Workflow-Graph (Rollen ohne `consumes` laufen parallel).
+
 ## Anti-Patterns
 
 1. **Over-swarming** — Triviale Tasks nicht swarmen. 5-Zeilen-Fix braucht kein SWAT-Team.
