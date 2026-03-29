@@ -44,7 +44,9 @@ User-Aufgabe
     |                       Instanziiert Prompts
     |                       Spawnt Worker-Agents
     |
-    +-- Kein Match? ------> Generic Fallback (Ad-hoc-Dekomposition)
+    +-- Kein Match? ------> Wiederkehrender Task-Typ?
+    |                       |-- Ja --> Auto-Team-Builder (erstellt + deployed sofort)
+    |                       +-- Nein -> Generic Fallback (Ad-hoc-Dekomposition)
     |
     v
 [Parallele Worker] Arbeiten gleichzeitig an unabhaengigen Teilaufgaben
@@ -60,6 +62,11 @@ User-Aufgabe
     |
     +-- PASS -----------> Ergebnis an User
     +-- FAIL -----------> Rework (max 2 Zyklen)
+    |
+    v
+[Post-Swarm Learning] (nur nach Rework)
+    Analysiert QG-Failures, schlaegt Prompt-Verbesserungen vor
+    Verbessert Team-Definition auf Disk --> naechste Session profitiert
 ```
 
 ### Team-Selektion (Hybrid)
@@ -230,6 +237,39 @@ Wenn die Quality Gate FAIL zurueckgibt:
 3. Quality Gate laeuft erneut
 4. Maximum 2 Rework-Zyklen — danach bestes Ergebnis mit QG-Notes an User
 
+## Trainer (Selbstlernendes System)
+
+Der Trainer ist der Coach aller SWAT-Teams — er erstellt, verbessert und auditiert Teams automatisch:
+
+### Auto-Creation
+
+Wenn kein Team zu einer Aufgabe passt und der Task-Typ wiederkehrend ist, erstellt der Trainer automatisch ein neues SWAT-Team:
+
+1. Dispatcher erkennt: kein Match, aber wiederkehrender Task-Typ
+2. User wird gefragt: "Soll ich ein neues Team erstellen?"
+3. Team Builder laeuft (Research → Prompt-Engineer → Validator)
+4. Neues Team wird auf Disk geschrieben und **sofort** fuer den aktuellen Task deployed
+5. Ab naechster Session ist das Team permanent verfuegbar
+
+### Post-Swarm Learning
+
+Nach jedem Einsatz mit Rework (QG hat Issues gefunden) analysiert der Trainer:
+
+- **Was** hat der QG bemaengelt?
+- **Welche Prompt-Schwaeche** hat das verursacht?
+- **Welcher Fix** behebt das Problem? (max 5 Zeilen, targeted)
+
+Der User muss jede Aenderung bestaetigen. Aenderungen werden direkt in die Team-Definition geschrieben — der Skill wird mit jedem Einsatz besser.
+
+### Team Fitness Audit
+
+On-demand per `/agent-swat-swarm team-audit`:
+
+- Strukturelle Integritaet aller Teams pruefen
+- Prompt-Qualitaet bewerten
+- Changelog reviewen (wiederkehrende Probleme?)
+- Coverage Gaps identifizieren (fehlende Teams?)
+
 ## Installation
 
 ### Claude Code Skill
@@ -317,7 +357,8 @@ agent-swat-swarm/
 |   |   |-- migration-refactor.md         # Migration/Refactor SWAT Team
 |   |   |-- full-stack-feature.md         # Full-Stack Feature SWAT Team
 |   |   +-- team-builder.md              # SWAT Team Builder (Meta-Team)
-|   |-- orchestration-protocol.md         # Ausfuehrungsprotokoll (Phasen 1-4, Rework)
+|   |-- orchestration-protocol.md         # Ausfuehrungsprotokoll (Phasen 1-5, Rework)
+|   |-- trainer-protocol.md              # Auto-Creation, Post-Swarm Learning, Audit
 |   |-- quality-gate-protocol.md          # QG-Spec mit DA-Integration
 |   +-- generic-swarm.md                 # Fallback fuer ungematchte Tasks
 +-- docs/
@@ -328,7 +369,7 @@ agent-swat-swarm/
             +-- 2026-03-29-agent-swat-swarm-implementation.md
 ```
 
-**~4.300 Zeilen** ueber 11 Dateien, davon **24 Agent-Rollen** mit vollstaendigen Prompt-Templates und Output-Contracts.
+**~4.500 Zeilen** ueber 12 Dateien, davon **24 Agent-Rollen** mit vollstaendigen Prompt-Templates und Output-Contracts.
 
 ## Eigene Teams erstellen
 
@@ -373,13 +414,12 @@ Genau das uebertraegt dieses Projekt auf Claude Code's Agent-System.
 
 ## Limitierungen
 
-- **Prompt-Qualitaet ist statisch** — Die initialen Prompts werden nicht automatisch verbessert. Feedback-Loops und A/B-Testing sind Phase-2 Features.
 - **Kein Team-Chaining** — Aktuell kann nur ein Team pro Task deployed werden. Multi-Team Tasks (z.B. "Build Feature + Security Audit") erfordern separate Aufrufe.
 - **Team Builder nutzt Sonnet** — Die Quality Gate (Opus Validator) faengt Format-Issues ab, aber tiefe Domaenen-Expertise in generierten Prompts ist limitiert. Upgrade auf Opus fuer den Prompt-Engineer ist empfohlen.
+- **Post-Swarm Learning ist konservativ** — Max 1 Edit pro Swarm, max 5 Zeilen. Groessere Prompt-Ueberarbeitungen erfordern manuellen Team Builder Einsatz.
 
 ## Roadmap (Phase 2)
 
-- [ ] Feedback-Loop: Post-Mortem nach SWAT-Einsatz, Erkenntnisse in Team-Definitionen
 - [ ] Team-Chaining fuer Multi-Team Tasks
 - [ ] Prompt-Evolution: A/B-Testing von Prompt-Varianten
 - [ ] Team-Komposition: Sub-Teams als Bausteine
@@ -441,7 +481,9 @@ User Task
     |                       Instantiates prompts
     |                       Spawns worker agents
     |
-    +-- No match? --------> Generic fallback (ad-hoc decomposition)
+    +-- No match? --------> Recurring task type?
+    |                       |-- Yes --> Auto-Team-Builder (creates + deploys immediately)
+    |                       +-- No ---> Generic fallback (ad-hoc decomposition)
     |
     v
 [Parallel Workers] Work simultaneously on independent subtasks
@@ -457,6 +499,11 @@ User Task
     |
     +-- PASS ------------> Result to user
     +-- FAIL ------------> Rework (max 2 cycles)
+    |
+    v
+[Post-Swarm Learning] (only after rework)
+    Analyzes QG failures, proposes prompt improvements
+    Improves team definition on disk --> next session benefits
 ```
 
 ### Team Selection (Hybrid)
@@ -627,6 +674,39 @@ When the quality gate returns FAIL:
 3. Quality gate runs again
 4. Maximum 2 rework cycles — then best result with QG notes presented to user
 
+## Trainer (Self-Learning System)
+
+The Trainer is the coach of all SWAT teams — it creates, improves, and audits teams automatically:
+
+### Auto-Creation
+
+When no team matches a task and the task type is recurring, the Trainer automatically creates a new SWAT team:
+
+1. Dispatcher detects: no match, but recurring task type
+2. User is asked: "Should I create a new team?"
+3. Team Builder runs (Research → Prompt-Engineer → Validator)
+4. New team is written to disk and **immediately** deployed for the current task
+5. From the next session onwards, the team is permanently available
+
+### Post-Swarm Learning
+
+After every deployment with rework (QG found issues), the Trainer analyzes:
+
+- **What** did the QG flag?
+- **Which prompt weakness** caused it?
+- **What fix** resolves the problem? (max 5 lines, targeted)
+
+The user must approve every change. Changes are written directly to the team definition file — the skill gets better with every deployment.
+
+### Team Fitness Audit
+
+On-demand via `/agent-swat-swarm team-audit`:
+
+- Check structural integrity of all teams
+- Evaluate prompt quality
+- Review changelog (recurring problems?)
+- Identify coverage gaps (missing teams?)
+
 ## Installation
 
 ### Claude Code Skill
@@ -714,7 +794,8 @@ agent-swat-swarm/
 |   |   |-- migration-refactor.md         # Migration/Refactor SWAT Team
 |   |   |-- full-stack-feature.md         # Full-Stack Feature SWAT Team
 |   |   +-- team-builder.md              # SWAT Team Builder (Meta-Team)
-|   |-- orchestration-protocol.md         # Execution protocol (phases 1-4, rework)
+|   |-- orchestration-protocol.md         # Execution protocol (phases 1-5, rework)
+|   |-- trainer-protocol.md              # Auto-creation, post-swarm learning, audit
 |   |-- quality-gate-protocol.md          # QG spec with DA integration
 |   +-- generic-swarm.md                 # Fallback for unmatched tasks
 +-- docs/
@@ -725,7 +806,7 @@ agent-swat-swarm/
             +-- 2026-03-29-agent-swat-swarm-implementation.md
 ```
 
-**~4,300 lines** across 11 files, including **24 agent roles** with complete prompt templates and output contracts.
+**~4,500 lines** across 12 files, including **24 agent roles** with complete prompt templates and output contracts.
 
 ## Creating Your Own Teams
 
@@ -770,13 +851,12 @@ This project transfers exactly this concept to Claude Code's agent system.
 
 ## Limitations
 
-- **Prompt quality is static** — Initial prompts are not automatically improved. Feedback loops and A/B testing are Phase 2 features.
 - **No team chaining** — Currently only one team can be deployed per task. Multi-team tasks (e.g., "build feature + security audit") require separate invocations.
 - **Team Builder uses Sonnet** — The quality gate (Opus Validator) catches format issues, but deep domain expertise in generated prompts is limited. Upgrading the Prompt-Engineer to Opus is recommended.
+- **Post-Swarm Learning is conservative** — Max 1 edit per swarm, max 5 lines. Larger prompt overhauls require manual Team Builder invocation.
 
 ## Roadmap (Phase 2)
 
-- [ ] Feedback loop: post-mortem after SWAT deployments, feed learnings into team definitions
 - [ ] Team chaining for multi-team tasks
 - [ ] Prompt evolution: A/B testing of prompt variants
 - [ ] Team composition: sub-teams as building blocks
