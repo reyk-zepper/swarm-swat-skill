@@ -2,6 +2,8 @@
 
 **Spezialisierte Agent-Teams fuer Claude Code** — vorkonfigurierte SWAT-Teams mit optimierten Prompts, Output-Contracts und Workflow-Graphs fuer spezifische Aufgabentypen.
 
+**[English version below](#english)**
+
 > Statt bei jeder komplexen Aufgabe von Grund auf zu improvisieren, wird ein spezialisiertes SWAT-Team deployed — wie eine Spezialeinheit, die genau fuer diesen Einsatz trainiert ist.
 
 ---
@@ -387,3 +389,397 @@ MIT
 ---
 
 Gebaut mit Claude Code. Das erste SWAT-Team wurde von seinem eigenen Vorgaenger (dem generischen `agent-swarm`) deployed — 6 parallele Sonnet-Worker, Opus Quality Gate, 1 Rework-Zyklus.
+
+---
+
+<a name="english"></a>
+
+# Agent SWAT Swarm (English)
+
+**Specialized agent teams for Claude Code** — pre-configured SWAT teams with optimized prompts, output contracts, and workflow graphs for specific task types.
+
+> Instead of improvising from scratch on every complex task, deploy a specialized SWAT team — like a special forces unit trained for exactly this type of mission.
+
+---
+
+## The Problem
+
+Claude Code's agent system is powerful: parallel agents, worktrees, quality gates. But on every complex task, the lead agent must decompose from zero:
+
+- Which worker roles do I need?
+- What prompts do I give them?
+- In what order do they run?
+- How do I pass outputs between agents?
+- How do I measure quality?
+
+This costs time, produces inconsistent results, and prompt quality depends on how well the lead happens to improvise.
+
+## The Solution: SWAT Teams
+
+Agent SWAT Swarm replaces generic ad-hoc swarms with **pre-configured specialist units**:
+
+- **Fixed roles** with pre-optimized prompts — every agent knows exactly what to do
+- **Output contracts** — every agent produces output in a defined format that the next agent can consume directly
+- **Workflow graphs** — clear dependencies: what runs in parallel, what runs sequentially
+- **Team-specific quality gates** — with domain-specific Devil's Advocate questions
+- **Hybrid selection** — automatic team recommendation or explicit user override
+
+The difference is like a thrown-together group vs. a well-drilled SWAT team: same tools, but pre-coordinated roles, workflows, and quality criteria.
+
+## How It Works
+
+```
+User Task
+    |
+    v
+[Dispatcher] Analyzes the task
+    |
+    +-- Match found? -----> Loads team definition
+    |                       Instantiates prompts
+    |                       Spawns worker agents
+    |
+    +-- No match? --------> Generic fallback (ad-hoc decomposition)
+    |
+    v
+[Parallel Workers] Work simultaneously on independent subtasks
+    |
+    v
+[Output Validation] Lead checks outputs against contracts
+    |
+    v
+[Sequential Workers] Consume outputs from the parallel phase
+    |
+    v
+[Quality Gate] Opus agent reviews everything + Devil's Advocate
+    |
+    +-- PASS ------------> Result to user
+    +-- FAIL ------------> Rework (max 2 cycles)
+```
+
+### Team Selection (Hybrid)
+
+1. **Automatic**: The dispatcher analyzes the task and selects the best team via natural language matching — no rigid keyword scoring, but genuine understanding of the task type.
+
+2. **User override**: Override at any time:
+   - Slash command: `/agent-swat-swarm security-audit`
+   - Natural language: "use the Frontend team"
+
+3. **Fallback**: If no team fits, the generic swarm is deployed — dynamic decomposition as before.
+
+## SWAT Teams
+
+### Security Audit
+
+```
+Scanner ──────────┐
+                  ├──> Fix-Proposer ──> Report-Writer
+Exploit-Analyst ──┘
+```
+
+Systematic security analysis: Scanner checks 9 OWASP categories, Exploit-Analyst evaluates attack vectors via STRIDE + CVSS, Fix-Proposer writes concrete code fixes, Report-Writer compiles an executive-ready security report.
+
+**Quality Mode:** Rigorous (separate QA + Devil's Advocate)
+
+### Frontend Feature
+
+```
+UI-Architect ──────┐
+                   ├──> Integrator ──> A11y-Reviewer
+Component-Builder ─┘
+```
+
+From architecture to accessibility: UI-Architect designs the component tree (RSC-first), Component-Builder implements, Integrator wires everything together, A11y-Reviewer checks WCAG 2.1 AA compliance.
+
+**Quality Mode:** Standard
+
+### Backend API
+
+```
+Schema-Designer ──────┐
+                      ├──> Test-Writer ──> Integration-Tester
+Endpoint-Builder ─────┘
+```
+
+Schema design + API endpoints in parallel, then test suite and integration verification. Every endpoint gets input validation, auth checks, and the test suite covers happy path + error cases.
+
+**Quality Mode:** Standard
+
+### Migration/Refactor
+
+```
+Impact-Analyst ──────┐
+                     ├──> Executor ──> Regression-Tester
+Migration-Planner ───┘
+```
+
+Safe migrations: impact analysis (direct + transitive dependencies), step-by-step plan (every step reversible), execution, and regression testing against the impact analysis.
+
+**Quality Mode:** Rigorous
+
+### Full-Stack Feature
+
+```
+Schema-Designer ──────┐
+                      |
+Frontend-Builder ─────┼──> Integrator ──> E2E-Tester
+                      |
+Backend-Builder ──────┘
+```
+
+End-to-end features: Schema-Designer defines shared types (single source of truth), frontend and backend work in parallel against placeholder types, Integrator harmonizes everything, E2E-Tester verifies the complete flow.
+
+**Quality Mode:** Standard (rigorous for production-critical features)
+
+### SWAT Team Builder (Meta-Team)
+
+```
+Research-Agent ──> Prompt-Engineer ──> Validator
+```
+
+The self-extending team: analyzes a use case, writes a complete team definition with optimized prompts, and validates it against the quality standard of existing teams. New SWAT teams can be generated at any time.
+
+**Quality Mode:** Rigorous (Opus Validator as QG for the definition itself)
+
+## Anatomy of a SWAT Team
+
+Each team definition is a Markdown file with this structure:
+
+```yaml
+---
+name: Team-Name
+triggers:
+  keywords: [relevant, signal, words]
+  file_patterns: ["**/relevant/**", "**/*.files"]
+  task_patterns: ["regex.*for.*tasks"]
+quality_mode: standard | rigorous
+max_workers: N
+---
+```
+
+Followed by:
+
+- **Roles** — Each with `model`, `subagent_type`, `mode`, `isolation`, `consumes` (dependencies), a complete **prompt template**, and a precise **output contract**
+- **Workflow graph** — ASCII DAG of execution order
+- **Devil's Advocate focus** — 5-6 domain-specific challenge questions
+- **Success criteria** — 5-6 measurable criteria for the quality gate
+
+### Why Prompt Templates Are the Key
+
+The entire value of a SWAT team lies in the pre-optimized prompts. A generic swarm tells an agent "do a security review". A SWAT team gives it:
+
+- 9 specific OWASP categories to systematically check
+- Exact patterns to search for (string concatenation in queries, hardcoded credentials, missing rate limiting...)
+- A precise output format that the next agent can consume directly
+- Clear boundaries of what this agent is responsible for and what it is not
+
+That's the difference between "check for security stuff" and a professional penetration testing protocol.
+
+### Output Contracts: The Chain That Works
+
+Output contracts solve a fundamental problem of parallel agent systems: How does Agent A pass its output to Agent B without B having to guess what it's getting?
+
+```
+Scanner produces:
+  ### [CRITICAL] SQL Injection in user.ts:42
+  - File: src/api/user.ts:42
+  - Category: A03:2021 Injection
+  - Description: String concatenation in SQL query
+  - Code: `db.query("SELECT * FROM users WHERE id = " + userId)`
+
+Fix-Proposer consumes exactly this format and produces:
+  ### Fix for: SQL Injection in user.ts:42
+  - Severity: CRITICAL
+  - File: src/api/user.ts
+  - Change: [Parameterized Query Code]
+```
+
+Every agent knows what it receives and what it must deliver.
+
+## Quality Gate
+
+Every SWAT deployment ends with a quality gate — never optional:
+
+| Mode | When | Agents | Cost |
+|------|------|--------|------|
+| **Standard** | Most tasks | 1x Opus (QA + DA combined) | 1 Opus call |
+| **Rigorous** | Production-critical, high error cost | 2x Opus in parallel (QA + DA separate) | 2 Opus calls |
+
+### Devil's Advocate
+
+Each team defines its own DA challenge questions. No generic "does this look good?", but instead:
+
+| Team | The DA asks |
+|------|------------|
+| Security Audit | Which attack vectors were NOT checked? Are the fixes just symptom treatment? |
+| Frontend Feature | Does it work at 320px? Are all elements keyboard-accessible? |
+| Migration | Which breaking changes were overlooked? Is rollback realistic? |
+| Backend API | How does it scale at 100x load? Race conditions? |
+
+### Rework Protocol
+
+When the quality gate returns FAIL:
+
+1. Issues are parsed
+2. Targeted fix agents are spawned (or existing workers continued via `SendMessage`)
+3. Quality gate runs again
+4. Maximum 2 rework cycles — then best result with QG notes presented to user
+
+## Installation
+
+### Claude Code Skill
+
+```bash
+# Clone the repository
+git clone https://github.com/reyk-zepper/swarm-swat-skill.git
+
+# Install as Claude Code skill (symlink)
+ln -s /path/to/swarm-swat-skill ~/.claude/skills/agent-swat-swarm
+```
+
+The skill is automatically loaded when Claude detects a complex task that would benefit from a SWAT team.
+
+### Prerequisites
+
+- Claude Code (CLI, Desktop App, or IDE Extension)
+- Claude Opus + Sonnet access (Opus for Lead/QG, Sonnet for Workers)
+
+## Usage
+
+### Automatic (recommended)
+
+Just work. The dispatcher automatically detects when a SWAT team adds value:
+
+```
+> Build a user management system with login, profile page, and API endpoints
+
+SWAT Team: Full-Stack Feature
+Reason: End-to-end feature across frontend + backend + tests
+Roles: Schema-Designer, Frontend-Builder, Backend-Builder, Integrator, E2E-Tester
+Override: /agent-swat-swarm <other-team>
+```
+
+### Explicit Override
+
+```
+> /agent-swat-swarm security-audit
+```
+
+Or in natural language:
+
+```
+> Use the Security team to review the auth middleware
+```
+
+### Create a New Team
+
+```
+> Create a SWAT team for performance optimization
+```
+
+The Team Builder analyzes the use case, writes prompts and output contracts, and validates the new definition.
+
+## Architecture Decisions
+
+### Why one skill instead of many?
+
+Claude Code's hook system has a `MAX_SKILLS` cap of 3 per invocation. With separate skills per team, SWAT teams would compete with each other and other skills for these 3 slots. With a single dispatcher skill, only 1 slot is used — team definitions are loaded on-demand via `Read`.
+
+### Why natural language matching instead of scoring?
+
+An early version had a weighted scoring formula (`keyword_hits * 2 + file_hits * 3`). That's pseudo-precision. Claude is an LLM — it understands context better than any formula. "Refactor the auth middleware" is a migration task, not a security task, even though "auth" is a security keyword. Natural language matching makes the right call.
+
+### Why output contracts instead of free text output?
+
+Without contracts, the lead must interpret and summarize the output of the previous agent at every sequential handoff. With contracts, the format is pre-defined — the next agent can consume directly. This eliminates interpretation overhead and information loss.
+
+### Why Sonnet for workers, Opus for quality gate?
+
+Sonnet is fast and cost-efficient — perfect for well-scoped subtasks with clear prompts. Opus is slower but significantly better at critical evaluation, pattern recognition across large contexts, and strategic thinking. The combination maximizes the speed-to-quality ratio: fast execution, thorough review.
+
+## File Structure
+
+```
+agent-swat-swarm/
+|-- SKILL.md                              # Dispatcher + orchestration protocol
+|-- references/
+|   |-- teams/
+|   |   |-- security-audit.md             # Security Audit SWAT Team
+|   |   |-- frontend-feature.md           # Frontend Feature SWAT Team
+|   |   |-- backend-api.md                # Backend API SWAT Team
+|   |   |-- migration-refactor.md         # Migration/Refactor SWAT Team
+|   |   |-- full-stack-feature.md         # Full-Stack Feature SWAT Team
+|   |   +-- team-builder.md              # SWAT Team Builder (Meta-Team)
+|   |-- quality-gate-protocol.md          # QG spec with DA integration
+|   +-- generic-swarm.md                 # Fallback for unmatched tasks
++-- docs/
+    |-- plans/
+    |   +-- 2026-03-29-agent-swat-swarm-design.md
+    +-- superpowers/
+        +-- plans/
+            +-- 2026-03-29-agent-swat-swarm-implementation.md
+```
+
+**~3,500 lines** across 10 files, including **24 agent roles** with complete prompt templates and output contracts.
+
+## Creating Your Own Teams
+
+Two ways:
+
+### 1. Team Builder (recommended)
+
+Just tell Claude what you need:
+
+```
+> Create a SWAT team for database performance optimization
+```
+
+The Team Builder (Research-Agent -> Prompt-Engineer -> Opus-Validator) generates a complete definition in the standard format.
+
+### 2. Manual
+
+Create a Markdown file in `references/teams/` following the standard format (see existing teams as templates). Add an entry to the team index in `SKILL.md`.
+
+## Conceptual Background
+
+### From Generic to Specialized
+
+The evolution of agent swarms in Claude Code:
+
+1. **Single agent** — Claude handles everything sequentially. Works, but slow for complex tasks.
+
+2. **Generic swarm** — Parallel agents with dynamic decomposition. Faster, but the lead must improvise on every deployment. Prompt quality varies.
+
+3. **SWAT teams** (this project) — Pre-configured specialist units. The lead selects and deploys instead of improvising. Consistent, high prompt quality. Optimized workflows per domain.
+
+### The SWAT Metaphor
+
+A police special forces unit (SWAT) differs from a patrol not by having better equipment, but by having:
+
+- **Pre-defined roles** — Every member knows their position
+- **Rehearsed procedures** — No improvising under pressure
+- **Domain expertise** — Training for specific scenarios
+- **Quality control** — Debrief after every deployment
+
+This project transfers exactly this concept to Claude Code's agent system.
+
+## Limitations
+
+- **Prompt quality is static** — Initial prompts are not automatically improved. Feedback loops and A/B testing are Phase 2 features.
+- **No team chaining** — Currently only one team can be deployed per task. Multi-team tasks (e.g., "build feature + security audit") require separate invocations.
+- **Team Builder uses Sonnet** — The quality gate (Opus Validator) catches format issues, but deep domain expertise in generated prompts is limited. Upgrading the Prompt-Engineer to Opus is recommended.
+
+## Roadmap (Phase 2)
+
+- [ ] Feedback loop: post-mortem after SWAT deployments, feed learnings into team definitions
+- [ ] Team chaining for multi-team tasks
+- [ ] Prompt evolution: A/B testing of prompt variants
+- [ ] Team composition: sub-teams as building blocks
+- [ ] Performance metrics: tracking swarm duration, rework rate, QG pass rate
+
+## License
+
+MIT
+
+---
+
+Built with Claude Code. The first SWAT team was deployed by its own predecessor (the generic `agent-swarm`) — 6 parallel Sonnet workers, Opus quality gate, 1 rework cycle.
