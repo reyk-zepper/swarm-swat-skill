@@ -58,6 +58,8 @@ Spezialisierte Agent-Teams fuer komplexe Aufgaben. Jedes SWAT-Team hat vorkonfig
 SWAT Team: [Name]
 Grund: [1 Satz warum dieses Team passt]
 Rollen: [Rollennamen aus Team-Definition]
+Agents: [N]x Sonnet (Worker) + [1-2]x Opus (Quality Gate) = [Total] Agents
+Quality Mode: [standard / rigorous]
 Override: /agent-swat-swarm <anderes-team>
 ```
 

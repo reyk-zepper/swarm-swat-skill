@@ -24,45 +24,46 @@ Beispiele:
    - User-Aufgabe (praezise Zusammenfassung)
    - Betroffene Dateien/Module (per Glob/Grep oder aus User-Angabe)
    - Relevanter Codebase-State (existierende Patterns, Frameworks, Conventions)
-3. **Prompt-Templates instanziieren**: `{task_context}` mit extrahiertem Kontext ersetzen
+3. **Team-Revalidierung**: Nach Context-Extraction pruefen ob das gewaehlte Team noch passt. Die Codebase-Analyse kann zeigen dass ein anderes Team besser geeignet ist (z.B. User sagt "baue Feature X" → Full-Stack gewaehlt, aber nach Code-Analyse: Frontend existiert bereits, nur API fehlt → Backend API waere richtig). Falls Wechsel noetig: dem User kurz zeigen und Team tauschen BEVOR Worker gespawnt werden.
+4. **Prompt-Templates instanziieren**: `{task_context}` mit extrahiertem Kontext ersetzen
 
 ## Phase 2: Parallele Ausfuehrung
 
-4. **Parallele Rollen spawnen**: Alle Rollen OHNE `consumes`-Abhaengigkeit in einem einzigen Message-Block spawnen
+5. **Parallele Rollen spawnen**: Alle Rollen OHNE `consumes`-Abhaengigkeit in einem einzigen Message-Block spawnen
    - Exakte Agent-Configs aus Team-Definition verwenden (model, subagent_type, mode, isolation)
    - Jedem Worker einen beschreibenden `name` geben (z.B. "scanner", "exploit-analyst")
    - `run_in_background: true` nur wenn genuinely unabhaengige Arbeit parallel moeglich
-5. **Auf alle parallelen Agents warten**
+6. **Auf alle parallelen Agents warten**
 
 ## Phase 3: Output-Validation + Sequentielle Ausfuehrung
 
-6. **Output-Validation** fuer jeden abgeschlossenen Worker:
+7. **Output-Validation** fuer jeden abgeschlossenen Worker:
    - Pruefe: Passt der Output zum definierten Output-Contract? (Struktur, Vollstaendigkeit, keine offensichtlichen Fehler)
    - Bei Format-Problemen: einmalig via `SendMessage` an den Worker korrigieren lassen
-   - Bei verbosen Outputs: Lead fasst die Kernpunkte zusammen bevor Weitergabe
-7. **Sequentielle Rollen spawnen** (die `consumes` haben):
+   - **Output-Kompression**: Wenn die kombinierten Worker-Outputs einer Phase ~4000+ Tokens ueberschreiten, fasse jeden Output auf die Kernpunkte zusammen die der naechste `consumes`-Agent laut dessen Output-Contract tatsaechlich braucht. Ziel: ~40% des Originals, ohne referenzierte Information zu verlieren. Konkret: behalte alle strukturierten Artefakte (Code-Bloecke, Tabellen, Listen mit IDs) und kuerze Prosa-Erklaerungen auf 1-2 Saetze pro Punkt.
+8. **Sequentielle Rollen spawnen** (die `consumes` haben):
    - `{Rollenname.output}` Platzhalter mit tatsaechlichen (ggf. zusammengefassten) Outputs ersetzen
    - Output-Validation fuer jede sequentielle Rolle wiederholen
 
 ## Phase 4: Integration + Quality Gate
 
-8. **Outputs integrieren**: Alle finalen Outputs einsammeln, auf Konflikte/Widersprueche/Luecken pruefen
-9. **Quality Gate spawnen**: `Read references/quality-gate-protocol.md` und folge dem Protokoll
+9. **Outputs integrieren**: Alle finalen Outputs einsammeln, auf Konflikte/Widersprueche/Luecken pruefen
+10. **Quality Gate spawnen**: `Read references/quality-gate-protocol.md` und folge dem Protokoll
    - `model: "opus"`, team-spezifische Erfolgskriterien + DA Focus
    - Quality Mode wie in Team-Definition (standard oder rigorous)
-10. **Ergebnis verarbeiten**:
+11. **Ergebnis verarbeiten**:
     - **PASS** → Ergebnis synthetisiert praesentieren
     - **PASS_WITH_NOTES** → Ergebnis praesentieren + Notes hervorheben
     - **FAIL** → Rework-Protokoll ausfuehren
 
 ## Rework-Protokoll (max 2 Zyklen)
 
-11. REWORK_NEEDED Items aus Quality Gate parsen
-12. Targeted Fix-Agents spawnen:
+12. REWORK_NEEDED Items aus Quality Gate parsen
+13. Targeted Fix-Agents spawnen:
     - Kleiner Fix → `SendMessage` an bestehenden Worker (bewahrt Kontext)
     - Groesserer Fix → Neuer Sonnet-Agent mit fokussiertem Prompt
-13. Quality Gate erneut ausfuehren (gleicher Modus)
-14. Nach 2 Zyklen ohne PASS: bestes Ergebnis mit verbleibenden QG-Notes an User praesentieren
+14. Quality Gate erneut ausfuehren (gleicher Modus)
+15. Nach 2 Zyklen ohne PASS: bestes Ergebnis mit verbleibenden QG-Notes an User praesentieren
 
 ## Ergebnis-Praesentation
 
