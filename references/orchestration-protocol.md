@@ -2,6 +2,21 @@
 
 Exaktes Protokoll fuer die Ausfuehrung eines SWAT-Swarms nach Team-Wahl.
 
+## Progress-Updates (Pflicht)
+
+Der User muss nach jeder Phase einen kurzen Status sehen. Format:
+
+```
+[Phase X/4] <Was passiert> — <Ergebnis oder Status>
+```
+
+Beispiele:
+- `[Phase 1/4] Vorbereitung — Team-Definition geladen, 12 Dateien im Scope`
+- `[Phase 2/4] Parallele Ausfuehrung — Scanner + Exploit-Analyst gestartet`
+- `[Phase 3/4] Sequentielle Ausfuehrung — Fix-Proposer arbeitet mit 3 CRITICAL + 5 HIGH Findings`
+- `[Phase 4/4] Quality Gate — Rigorous Mode, QA + DA laufen parallel`
+- `[Rework 1/2] — 2 MAJOR Issues werden gefixed`
+
 ## Phase 1: Vorbereitung
 
 1. **Team-Definition laden**: `Read` die gematchte Team-Definition aus `references/teams/<name>.md`
@@ -32,7 +47,7 @@ Exaktes Protokoll fuer die Ausfuehrung eines SWAT-Swarms nach Team-Wahl.
 ## Phase 4: Integration + Quality Gate
 
 8. **Outputs integrieren**: Alle finalen Outputs einsammeln, auf Konflikte/Widersprueche/Luecken pruefen
-9. **Quality Gate spawnen**: Siehe `references/quality-gate-protocol.md`
+9. **Quality Gate spawnen**: `Read references/quality-gate-protocol.md` und folge dem Protokoll
    - `model: "opus"`, team-spezifische Erfolgskriterien + DA Focus
    - Quality Mode wie in Team-Definition (standard oder rigorous)
 10. **Ergebnis verarbeiten**:
@@ -66,6 +81,23 @@ Fuer Rollen mit `isolation: worktree` in der Team-Definition:
 
 **Wann Worktrees:** Mehrere Worker aendern Code in ueberlappenden Verzeichnissen oder brauchen kompilierbaren State.
 **Wann NICHT:** Worker lesen nur Code oder schreiben in komplett getrennte Dateien.
+
+### Worktree-Merge Protokoll
+
+Wenn parallele Worker in Worktrees gearbeitet haben, gibt jeder Agent seinen Worktree-Branch zurueck. Der Lead merged wie folgt:
+
+1. **Branches sammeln** — Notiere alle zurueckgegebenen Worktree-Branches
+2. **Sequentiell mergen** — Merge jeden Branch einzeln in den Hauptbranch (nicht alle gleichzeitig):
+   ```
+   git merge <worker-branch-1> --no-edit
+   git merge <worker-branch-2> --no-edit
+   ```
+3. **Konflikte aufloesen** — Bei Merge-Konflikten:
+   - Lies beide Seiten des Konflikts
+   - Entscheide basierend auf den Output-Contracts welche Version korrekt ist
+   - Bei echten semantischen Konflikten (beide Seiten aendern die gleiche Logik unterschiedlich): spawne einen Sonnet-Agent mit beiden Versionen und dem Original-Task als Kontext, der die korrekte Synthese schreibt
+4. **Build-Check** — Nach allen Merges: pruefe ob der Code kompiliert/lauffaehig ist (z.B. `npm run build` oder `tsc --noEmit`). Falls nicht: Fix-Agent spawnen bevor Quality Gate
+5. **Worktree-Cleanup** — Worktrees werden automatisch aufgeraeumt. Falls nicht, `git worktree remove <path>`
 
 ## Swarm Sizing
 

@@ -1,21 +1,6 @@
 ---
 name: agent-swat-swarm
-description: Spezialisierte SWAT-Team Swarm-Orchestrierung. Bildet aufgabenspezifische Agent-Teams mit voroptimierte Prompts, Output-Contracts und Workflow-Graphs. Triggers proaktiv bei komplexen Implementierungen, Multi-File-Aenderungen, Security Audits, Frontend Features, Backend APIs, Migrationen und Full-Stack Features.
-metadata:
-  filePattern:
-    - "**/auth/**"
-    - "**/middleware/**"
-    - "**/security/**"
-    - "**/api/**"
-    - "**/routes/**"
-    - "**/components/**"
-    - "**/prisma/**"
-    - "**/drizzle/**"
-    - "**/migration*/**"
-  bashPattern:
-    - "npm audit"
-    - "npx prisma"
-    - "npx drizzle"
+description: Parallel-Agent SWAT-Teams mit voroptimierte Prompts, Output-Contracts und Workflow-Graphs. PROAKTIV AKTIVIEREN wenn eine Aufgabe 4+ Dateien betrifft, mehrere Domaenen (Frontend+Backend) umspannt, ein Security Audit oder Review erfordert, eine Migration/Refactoring ueber viele Files durchfuehrt, oder 3+ unabhaengige Subtasks hat. NICHT aktivieren bei Single-File-Tasks, schnellen Fixes, oder wenn der User explizit einen einfachen Ansatz will.
 ---
 
 # Agent SWAT Swarm
@@ -78,7 +63,13 @@ Override: /agent-swat-swarm <anderes-team>
 
 ## Ausfuehrung
 
-Nach Team-Wahl: `Read references/orchestration-protocol.md` und folge dem Protokoll exakt.
+**Pfad-Konvention:** Alle Pfade in diesem Skill sind relativ zum Skill-Root-Verzeichnis. Wenn der Skill unter `~/.claude/skills/agent-swat-swarm/` installiert ist, loese `references/teams/security-audit.md` als `~/.claude/skills/agent-swat-swarm/references/teams/security-audit.md` auf. Falls das Verzeichnis nicht ermittelt werden kann, nutze Glob mit Pattern `**/agent-swat-swarm/references/teams/*.md` um die Dateien zu finden.
+
+Nach Team-Wahl:
+
+1. `Read references/orchestration-protocol.md` — folge dem Protokoll exakt
+2. Falls Read fehlschlaegt (Pfad nicht aufloesbar): Glob `**/agent-swat-swarm/references/**` um das Skill-Verzeichnis zu finden, dann erneut lesen
+3. Falls auch das fehlschlaegt: Generic Fallback verwenden (dynamische Dekomposition ohne Team-Definition)
 
 ## References
 

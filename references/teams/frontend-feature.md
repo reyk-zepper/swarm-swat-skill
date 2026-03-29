@@ -226,8 +226,8 @@ model: sonnet
 subagent_type: general-purpose
 mode: bypassPermissions
 isolation: worktree
+consumes: [UI-Architekt.output, Component-Builder.output]
 ```
-**consumes:** [UI-Architekt.output, Component-Builder.output]
 
 ### Prompt
 
@@ -324,8 +324,8 @@ Falls der Integrator von der Architektur-Vorgabe abweichen musste:
 ```yaml
 model: sonnet
 subagent_type: general-purpose
+consumes: [Integrator.output]
 ```
-**consumes:** [Integrator.output]
 
 ### Prompt
 
