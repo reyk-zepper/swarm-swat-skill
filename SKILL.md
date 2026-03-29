@@ -41,7 +41,8 @@ Spezialisierte Agent-Teams fuer komplexe Aufgaben. Jedes SWAT-Team hat vorkonfig
 ### 1. User-Override pruefen
 
 - **Slash-Command**: `/agent-swat-swarm <team-name>` → Team erzwungen
-  - Gueltige Namen: `security-audit`, `frontend-feature`, `backend-api`, `migration-refactor`, `full-stack-feature`, `team-builder`, `team-audit`
+  - Team-Namen: `security-audit`, `frontend-feature`, `backend-api`, `migration-refactor`, `full-stack-feature`, `team-builder`
+  - Sonder-Command: `team-audit` → Kein Team-Deploy, stattdessen: `Read references/trainer-protocol.md` Teil 3 und fuehre das Team Fitness Audit durch
 - **Keyword im Prompt**: "nutze Security Team", "mit Frontend SWAT", "deploy Backend Team" → Team erzwungen
 
 ### 2. Automatisches Matching (kein Override)
